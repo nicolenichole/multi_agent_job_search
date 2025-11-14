@@ -30,6 +30,7 @@ dist/
 # Output files
 tailored_resume.txt
 *.log
+workflow_graph.png
 
 # OS
 .DS_Store

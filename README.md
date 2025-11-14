@@ -1,6 +1,21 @@
 # Multi-Agent Job Search Workflow
 
-A multi-step workflow using LangGraph, LangChain, and OpenAI's GPT-4o model for job searching, screening, and resume tailoring.
+A production-ready multi-agent system using LangGraph, LangChain, and OpenAI's GPT-4o for intelligent job searching, automated screening, and AI-powered resume tailoring.
+
+## 🚀 Quick Demo
+
+```bash
+# Activate environment
+source venv/bin/activate
+
+# Set API key
+export OPENAI_API_KEY=sk-...
+
+# Run demo
+python demo.py
+```
+
+For detailed demo instructions, see [DEMO.md](DEMO.md)
 
 ## Overview
 
@@ -15,14 +30,17 @@ This workflow includes:
 
 ```
 .
-├── config.py          # Environment setup and LLM configuration
-├── tools.py           # Tool definitions (YC search, PDF parsing, etc.)
-├── agents.py          # Agent construction and invocation functions
-├── utils.py           # Utility functions (JSON extraction, etc.)
-├── graph.py           # LangGraph workflow definition
-├── main.py            # Main entry point
-├── requirements.txt   # Python dependencies
-└── README.md          # This file
+├── config.py              # Environment setup and LLM configuration
+├── tools.py               # Tool definitions (YC search, PDF parsing, etc.)
+├── agents.py              # Agent construction and invocation functions
+├── utils.py               # Utility functions (JSON extraction, etc.)
+├── graph.py               # LangGraph workflow definition
+├── main.py                # Main entry point (production use)
+├── demo.py                # Demo script (presentation-ready)
+├── requirements.txt       # Python dependencies
+├── README.md              # This file
+├── DEMO.md                # Demo guide and talking points
+└── .gitignore             # Git ignore rules
 ```
 
 ## Setup
@@ -67,9 +85,23 @@ This workflow includes:
 
 ## Usage
 
-### Basic Usage
+### Demo Mode (Recommended for Presentations)
 
-Run the main script:
+Run the polished demo script:
+```bash
+python demo.py
+```
+
+The demo script provides:
+- ✅ Clean, formatted output
+- ✅ Progress indicators
+- ✅ Automatic job selection
+- ✅ Summary statistics
+- ✅ Professional presentation format
+
+### Production Mode
+
+Run the main script for full control:
 ```bash
 # With default resume path ("Jane Doe Resume.pdf")
 python main.py
@@ -114,22 +146,58 @@ if interrupts:
 
 ## Architecture
 
+### Workflow Diagram
+```
+┌─────────┐     ┌──────────┐     ┌─────────┐     ┌──────────────┐     ┌─────────┐
+│ Search  │────▶│  Enrich  │────▶│ Screen  │────▶│ Human Select │────▶│ Tailor  │
+│ Agent   │     │  (opt.)   │     │ Agent   │     │  (interrupt) │     │ Agent   │
+└─────────┘     └──────────┘     └─────────┘     └──────────────┘     └─────────┘
+    │                                 │                    │                  │
+    ▼                                 ▼                    ▼                  ▼
+[YC Search]                    [Resume PDF]         [User Choice]    [Tailored Output]
+```
+
 ### Agents
-- **Search agent**: Calls YCombinatorSearch to fetch jobs and outputs a JSON array
-- **Screen agent**: Uses ParseResumePDF to read resume, then returns relevant jobs
-- **Tailor agent**: Generates tailored resume bullets for selected jobs
+- **Search Agent**: Expands search terms and retrieves jobs from Y Combinator "Who's hiring?" board
+- **Screen Agent**: Analyzes resume and filters jobs by relevance using semantic matching
+- **Tailor Agent**: Generates job-specific resume bullets aligned with job requirements
 
 ### Tools
-- **YCombinatorSearch**: Searches HN "Who's hiring?" via `yc_search.py`
-- **ParseResumePDF**: Extracts text from resume PDF using PyMuPDF
-- **WriteTailoredResumeSection**: Appends generated content to `tailored_resume.txt`
+- **YCombinatorSearch**: Searches Hacker News "Who's hiring?" threads via `yc_search.py`
+- **ParseResumePDF**: Extracts and parses text from resume PDFs using PyMuPDF
+- **WriteTailoredResumeSection**: Writes generated content to `tailored_resume.txt`
 
-### Workflow
-The LangGraph workflow follows: `search → (optional enrich) → screen → human_select (interrupt) → tailor → END`
+### Key Features
+- 🔄 **Stateful Workflow**: LangGraph maintains state across workflow steps
+- 🤝 **Human-in-the-Loop**: Interactive job selection with workflow interruption
+- 🧠 **LLM-Powered**: Uses GPT-4o for intelligent job matching and content generation
+- 🔧 **Modular Design**: Easy to extend with new agents, tools, or data sources
 
 ## Output
 
 Tailored resume content is written to `tailored_resume.txt` in the current directory.
+
+## Demo Presentation
+
+### Quick Demo Commands
+```bash
+# 1. Activate environment
+source venv/bin/activate
+
+# 2. Set API key
+export OPENAI_API_KEY=sk-...
+
+# 3. Run demo
+python demo.py
+```
+
+### Demo Highlights
+- **Search**: Finds 3-50 jobs based on search terms
+- **Screen**: Filters to top 10 most relevant jobs
+- **Tailor**: Generates customized resume bullets for 2 selected jobs
+- **Time**: ~2-3 minutes total runtime
+
+See [DEMO.md](DEMO.md) for detailed demo guide, talking points, and troubleshooting.
 
 ## Troubleshooting
 
